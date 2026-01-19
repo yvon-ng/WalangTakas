@@ -1,18 +1,28 @@
 package com.walangtakas;
 
+import com.walangtakas.core.EngineManager;
 import com.walangtakas.core.WindowManager;
+import com.walangtakas.core.utils.Consts;
+import com.walangtakas.test.TestGame;
+import lombok.Getter;
 import org.lwjgl.Version;
 
 public class Launcher {
+    @Getter
+    private static WindowManager window;
+    @Getter
+    private static TestGame game;
+
     public static void main(String[] args) {
-        System.out.println(Version.getVersion());
-        WindowManager window = new WindowManager("Walang Takas", 1600, 900, false);
-        window.init();
+        window = new WindowManager(Consts.TITLE, 1600, 900, false);
+        game = new TestGame();
+        EngineManager engine = new EngineManager();
 
-        while(!window.windowShouldClose()) {
-            window.update();
+        try {
+            engine.start();
+        } catch (Exception e){
+            e.printStackTrace();
         }
-
-        window.cleanup();
     }
+
 }
