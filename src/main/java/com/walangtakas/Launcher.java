@@ -5,7 +5,6 @@ import com.walangtakas.core.WindowManager;
 import com.walangtakas.core.utils.Consts;
 import com.walangtakas.test.TestGame;
 import lombok.Getter;
-import org.lwjgl.Version;
 
 public class Launcher {
     @Getter

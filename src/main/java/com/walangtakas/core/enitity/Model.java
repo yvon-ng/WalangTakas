@@ -1,6 +1,5 @@
 package com.walangtakas.core.enitity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
