@@ -9,7 +9,6 @@ import com.walangtakas.core.utils.Consts;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 
 public class TestGame implements ILogic {
 
