@@ -1,17 +1,17 @@
 package com.walangtakas.test;
 
-import com.walangtakas.Launcher;
+import com.walangtakas.Main;
 import com.walangtakas.core.*;
 import com.walangtakas.core.enitity.Entity;
 import com.walangtakas.core.enitity.Model;
 import com.walangtakas.core.enitity.Texture;
+import com.walangtakas.core.utils.Consts;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 public class TestGame implements ILogic {
-
-    private static final float CAMERA_MOVE_SPEED = 0.05f;
 
     private final RenderManager renderer;
     private final ObjectLoader loader;
@@ -24,7 +24,7 @@ public class TestGame implements ILogic {
 
     public TestGame() {
         renderer = new RenderManager();
-        window = Launcher.getWindow();
+        window = Main.getWindow();
         loader = new ObjectLoader();
         camera = new Camera();
         cameraInc = new Vector3f(0,0,0);
@@ -34,80 +34,31 @@ public class TestGame implements ILogic {
     public void init() throws Exception {
         renderer.init();
 
-        float[] vertices = new float[] {
-                -0.5f, 0.5f, 0.5f,
-                -0.5f, -0.5f, 0.5f,
-                0.5f, -0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f,
-                -0.5f, 0.5f, -0.5f,
-                0.5f, 0.5f, -0.5f,
-                -0.5f, -0.5f, -0.5f,
-                0.5f, -0.5f, -0.5f,
-                -0.5f, 0.5f, -0.5f,
-                0.5f, 0.5f, -0.5f,
-                -0.5f, 0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f,
-                0.5f, -0.5f, 0.5f,
-                -0.5f, 0.5f, 0.5f,
-                -0.5f, -0.5f, 0.5f,
-                -0.5f, -0.5f, -0.5f,
-                0.5f, -0.5f, -0.5f,
-                -0.5f, -0.5f, 0.5f,
-                0.5f, -0.5f, 0.5f,
-        };
-        float[] textureCoords = new float[]{
-                0.0f, 0.0f,
-                0.0f, 0.5f,
-                0.5f, 0.5f,
-                0.5f, 0.0f,
-                0.0f, 0.0f,
-                0.5f, 0.0f,
-                0.0f, 0.5f,
-                0.5f, 0.5f,
-                0.0f, 0.5f,
-                0.5f, 0.5f,
-                0.0f, 1.0f,
-                0.5f, 1.0f,
-                0.0f, 0.0f,
-                0.0f, 0.5f,
-                0.5f, 0.0f,
-                0.5f, 0.5f,
-                0.5f, 0.0f,
-                1.0f, 0.0f,
-                0.5f, 0.5f,
-                1.0f, 0.5f,
-        };
-        int[] indices = new int[]{
-                0, 1, 3, 3, 1, 2,
-                8, 10, 11, 9, 8, 11,
-                12, 13, 7, 5, 12, 7,
-                14, 15, 6, 4, 14, 6,
-                16, 18, 19, 17, 16, 19,
-                4, 6, 7, 5, 4, 7,
-        };
-
-        Model model = loader.loadModel(vertices, textureCoords, indices);
-        model.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")));
+        Model model = loader.loadOBJModel("/models/bunny.obj");
+        model.setTexture(new Texture(loader.loadTexture("textures/blue.png")));
         entity = new Entity(model, new Vector3f(0,0,-5), new Vector3f(0,0,0), 1);
     }
 
     @Override
     public void input() {
         cameraInc.set(0,0,0);
-        if(window.isKeyPressed(GLFW.GLFW_KEY_W)) cameraInc.z = -1;
-        if(window.isKeyPressed(GLFW.GLFW_KEY_S)) cameraInc.z = 1;
-        if(window.isKeyPressed(GLFW.GLFW_KEY_A)) cameraInc.x = -1;
-        if(window.isKeyPressed(GLFW.GLFW_KEY_D)) cameraInc.x = 1;
-        if(window.isKeyPressed(GLFW.GLFW_KEY_Z)) cameraInc.y = -1;
-        if(window.isKeyPressed(GLFW.GLFW_KEY_X)) cameraInc.y = 1;
+        if(window.isKeyPressed(GLFW.GLFW_KEY_W)) cameraInc.z = -0.05f; // 1
+        if(window.isKeyPressed(GLFW.GLFW_KEY_S)) cameraInc.z = 0.05f; // 1
+        if(window.isKeyPressed(GLFW.GLFW_KEY_A)) cameraInc.x = -0.05f; // 1
+        if(window.isKeyPressed(GLFW.GLFW_KEY_D)) cameraInc.x = 0.05f; // 1
+        if(window.isKeyPressed(GLFW.GLFW_KEY_Z)) cameraInc.y = -0.05f; // 1
+        if(window.isKeyPressed(GLFW.GLFW_KEY_X)) cameraInc.y = 0.05f; // 1
     }
 
     @Override
-    public void update() {
-        camera.movePosition(cameraInc.x * CAMERA_MOVE_SPEED, cameraInc.y * CAMERA_MOVE_SPEED, cameraInc.z * CAMERA_MOVE_SPEED);
+    public void update(float interval, MouseInput mouseInput) {
+        camera.movePosition(cameraInc.x * Consts.CAMERA_STEP, cameraInc.y * Consts.CAMERA_STEP, cameraInc.z * Consts.CAMERA_STEP);
 
-        entity.incRotation(0.0f, 0.5f, 0.0f );
+        if (mouseInput.isRightButtonPressed()){
+            Vector2f rotVec = mouseInput.getDisplayVec();
+            camera.moveRotation(rotVec.x * Consts.MOUSE_SENSITIVITY, rotVec.y * Consts.MOUSE_SENSITIVITY, 0);
+        }
+        entity.incRotation(0.0f, 0.1f, 0.0f );
     }
 
     @Override

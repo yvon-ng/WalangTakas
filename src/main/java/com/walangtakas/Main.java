@@ -6,7 +6,7 @@ import com.walangtakas.core.utils.Consts;
 import com.walangtakas.test.TestGame;
 import lombok.Getter;
 
-public class Launcher {
+public class Main {
     @Getter
     private static WindowManager window;
     @Getter

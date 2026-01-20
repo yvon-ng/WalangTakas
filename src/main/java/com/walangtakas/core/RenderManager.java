@@ -1,6 +1,6 @@
 package com.walangtakas.core;
 
-import com.walangtakas.Launcher;
+import com.walangtakas.Main;
 import com.walangtakas.core.enitity.Entity;
 import com.walangtakas.core.utils.Transformation;
 import com.walangtakas.core.utils.Utils;
@@ -15,7 +15,7 @@ public class RenderManager {
     private ShaderManager shader;
 
     public RenderManager() {
-        window = Launcher.getWindow();
+        window = Main.getWindow();
     }
 
     public void init() throws Exception {

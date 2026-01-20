@@ -1,6 +1,6 @@
 package com.walangtakas.core;
 
-import com.walangtakas.Launcher;
+import com.walangtakas.Main;
 import com.walangtakas.core.utils.Consts;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,15 +19,18 @@ public class EngineManager {
     private boolean isRunning;
 
     private WindowManager window;
+    private MouseInput mouseInput;
     private GLFWErrorCallback errorCallback;
     private ILogic gameLogic;
 
     public void init() throws Exception {
         GLFW.glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
-        window = Launcher.getWindow();
-        gameLogic = Launcher.getGame();
+        window = Main.getWindow();
+        mouseInput = new MouseInput();
+        gameLogic = Main.getGame();
         window.init();
         gameLogic.init();
+        mouseInput.init();
     }
 
     public void start() throws Exception {
@@ -68,7 +71,7 @@ public class EngineManager {
                 }
             }
             if (render) {
-                update();
+                update(frameTime);
                 render();
                 frames++;
             }
@@ -82,6 +85,7 @@ public class EngineManager {
     }
 
     private void input() {
+        mouseInput.input();
         gameLogic.input();
     }
 
@@ -90,8 +94,8 @@ public class EngineManager {
         window.update();
     }
 
-    private void update() {
-        gameLogic.update();
+    private void update(float interval) {
+        gameLogic.update(interval, mouseInput);
     }
 
     private void cleanup() {
