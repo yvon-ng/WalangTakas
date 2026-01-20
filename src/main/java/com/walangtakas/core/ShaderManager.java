@@ -1,5 +1,6 @@
 package com.walangtakas.core;
 
+import com.walangtakas.core.enitity.Material;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -27,6 +28,14 @@ public class ShaderManager {
         int uniformLocation = GL20.glGetUniformLocation(programId, uniformName);
         if (uniformLocation < 0) throw new Exception("Could not find uniform " + uniformName);
         uniforms.put(uniformName, uniformLocation);
+    }
+
+    public void createMaterialUniform(String uniformName) throws Exception {
+        createUniform(uniformName + ".ambient");
+        createUniform(uniformName + ".diffuse");
+        createUniform(uniformName + ".specular");
+        createUniform(uniformName + ".hasTexture");
+        createUniform(uniformName + ".reflectance");
     }
 
     public void setUniform(String uniformName, Matrix4f value) {
@@ -57,6 +66,14 @@ public class ShaderManager {
 
     public void setUniform(String uniformName, float value) {
         GL20.glUniform1f(uniforms.get(uniformName), value);
+    }
+
+    public void setUniform(String uniformName, Material material) {
+        setUniform(uniformName + ".ambient", material.getAmbientColor());
+        setUniform(uniformName + ".diffuse", material.getDiffuseColor());
+        setUniform(uniformName + ".specular", material.getSpecularColor());
+        setUniform(uniformName + ".hasTexture", material.hasTexture() ? 1 : 0);
+        setUniform(uniformName + ".reflectance", material.getReflectance());
     }
 
     public void createVertexShader(String shaderCode) throws Exception {
@@ -93,18 +110,19 @@ public class ShaderManager {
         if (fragmentShaderId != 0) GL20.glDetachShader(programId, fragmentShaderId);
 
         GL20.glValidateProgram(programId);
-        if(GL20.glGetProgrami(programId, GL20.GL_VALIDATE_STATUS) == 0) throw new Exception("Unable to validate shader code: " + GL20.glGetProgramInfoLog(programId, 1024));
+        if (GL20.glGetProgrami(programId, GL20.GL_VALIDATE_STATUS) == 0)
+            throw new Exception("Unable to validate shader code: " + GL20.glGetProgramInfoLog(programId, 1024));
     }
 
-    public void bind(){
+    public void bind() {
         GL20.glUseProgram(programId);
     }
 
-    public void unbind(){
+    public void unbind() {
         GL20.glUseProgram(0);
     }
 
-    public void cleanup(){
+    public void cleanup() {
         unbind();
         if (programId != 0) GL20.glDeleteProgram(programId);
     }

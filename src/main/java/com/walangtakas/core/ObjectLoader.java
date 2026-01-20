@@ -51,6 +51,7 @@ public class ObjectLoader {
                             Float.parseFloat(tokens[1]),
                             Float.parseFloat(tokens[2])
                     );
+                    textures.add(textureVec);
                     break;
                 case "vn":
                     //vertex normals
@@ -90,7 +91,7 @@ public class ObjectLoader {
 
         int[] indicesArr = indices.stream().mapToInt((Integer v) -> v).toArray();
 
-        return loadModel(verticesArr, texCoordArr, indicesArr);
+        return loadModel(verticesArr, texCoordArr, normalsArr, indicesArr);
     }
 
     private static void processVertex(int pos, int texCoord, int normal, List<Vector2f> texCoordList, List<Vector3f> normalList,
@@ -126,11 +127,12 @@ public class ObjectLoader {
         faces.add(facesVec);
     }
 
-    public Model loadModel(float[] vertices, float[] textureCoords, int[] indices) {
+    public Model loadModel(float[] vertices, float[] textureCoords, float[] normals, int[] indices) {
         int id = createVAD();
         storeIndicesBuffer(indices);
         storeDataInAttribList(0, 3, vertices);
         storeDataInAttribList(1, 2, textureCoords);
+        storeDataInAttribList(2, 3, normals);
         unbind();
         return new Model(id, indices.length);
     }
